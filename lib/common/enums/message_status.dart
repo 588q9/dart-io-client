@@ -1,9 +1,1 @@
-enum MessageStatus{
-  DRAFT,
-  SENDING,
-  SENT,
-
-  FAIL_SEND
-
-
-}
+enum MessageStatus { DRAFT, SENDING, SENT, FAIL_SEND }

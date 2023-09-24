@@ -8,10 +8,12 @@ part 'ping_client_frame.g.dart';
 class PingClientFrame extends ClientFrame {
   String message;
   static const PACKET_TYPE = PacketType.PING;
+
   PingClientFrame({this.message = 'ping'});
 
   factory PingClientFrame.fromJson(Map<String, dynamic> json) =>
       _$PingClientFrameFromJson(json);
+
   @override
   Map<String, dynamic> toJson() => _$PingClientFrameToJson(this);
 

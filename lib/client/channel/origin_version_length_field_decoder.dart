@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:ash_go/common/util/byte_buf.dart';
-import 'package:ash_go/common/util/json_serializer_util.dart';
 
 typedef PacketCallback = void Function(ByteBuf packet);
 
@@ -22,6 +21,7 @@ class OriginVersionLengthFieldDecoder {
 
   late final int headerLength;
   late PacketCallback _packetProcess;
+
   OriginVersionLengthFieldDecoder(this.maxPacketLength, this.preLengthField,
       {this.lengthField = 4, required this.postLengthField}) {
     headerLength = preLengthField + lengthField + postLengthField;

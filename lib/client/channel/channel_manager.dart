@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
-import 'dart:ui';
-
 
 import 'package:ash_go/client/channel/origin_version_length_field_decoder.dart';
 import 'package:ash_go/client/packet/origin_version_packet.dart';
@@ -14,11 +12,11 @@ import 'package:ash_go/common/protocol/frame/client/client_frame.dart';
 import 'package:ash_go/common/protocol/frame/server/server_frame.dart';
 import 'package:ash_go/common/util/byte_buf.dart';
 import 'package:ash_go/common/util/json_serializer_util.dart';
-import 'package:async/async.dart';
 
 typedef Connected = void Function(ChannelManager channelManager);
+
 //内部用途，外部不应使用
-class ReconnectedServerFrame extends ServerFrame{
+class ReconnectedServerFrame extends ServerFrame {
   @override
   PacketType getPacketType() {
     // TODO: implement getPacketType
@@ -30,9 +28,9 @@ class ReconnectedServerFrame extends ServerFrame{
     // TODO: implement toJson
     throw UnimplementedError();
   }
-
 }
-class DisconnectServerFrame extends ServerFrame{
+
+class DisconnectServerFrame extends ServerFrame {
   @override
   PacketType getPacketType() {
     // TODO: implement getPacketType
@@ -44,15 +42,14 @@ class DisconnectServerFrame extends ServerFrame{
     // TODO: implement toJson
     throw UnimplementedError();
   }
-
 }
 
 class ChannelManager {
   Socket? _channel;
 
   late String host;
-bool isClose=false;
-bool _needReconnect=false;
+  bool isClose = false;
+  bool _needReconnect = false;
   late int port;
 
   final _serializerUtil = const JsonSerializerUtil();
@@ -66,7 +63,7 @@ bool _needReconnect=false;
           lengthField: OriginVersionPacket.LENGTH_FIELD_LENGTH,
           postLengthField: OriginVersionPacket.SERIES_ID_FIELD_LENGTH +
               OriginVersionPacket.SERIALIZE_TYPE_FIELD_LENGTH);
-   Completer<bool> _connectState = Completer();
+  Completer<bool> _connectState = Completer();
 
   final serverFrameController = StreamController<ServerFrame>();
 
@@ -98,77 +95,55 @@ bool _needReconnect=false;
       var serverFrame = buildServerFrame(buf);
       serverFrameController.add(serverFrame);
     };
-_connect(connected);
-
+    _connect(connected);
   }
-void _reconnect(){
 
-if(_channel!=null||_connectState.isCompleted&&_channel==null){
-  serverFrameController.add(DisconnectServerFrame());
-}
-    _channel=null;
-if(isClose){
-  return;
-}
+  void _reconnect() {
+    if (_channel != null || _connectState.isCompleted && _channel == null) {
+      serverFrameController.add(DisconnectServerFrame());
+    }
+    _channel = null;
+    if (isClose) {
+      return;
+    }
 
+    Timer(Duration(seconds: 12), () {
+      _connect(null);
+    });
+  }
 
-Timer(Duration(seconds: 12), () {
-
-  _connect(null);
-});
-
-
-
-
-}
-
-
-  void _connect(Connected? connected){
-
-
-    Socket.connect(host, port,timeout: Duration(seconds: 25)).then((value) {
-      _needReconnect=false;
+  void _connect(Connected? connected) {
+    Socket.connect(host, port, timeout: Duration(seconds: 25)).then((value) {
+      _needReconnect = false;
       _channel = value;
 
-if(!_connectState.isCompleted){
-  _connectState.complete(true);
-
-}else{
-
-  serverFrameController.add(ReconnectedServerFrame());
-
-
-
-}
+      if (!_connectState.isCompleted) {
+        _connectState.complete(true);
+      } else {
+        serverFrameController.add(ReconnectedServerFrame());
+      }
       connected?.call(this);
 
       return value;
     }).then((sc) {
+      sc.listen(
+        (event) {
+          _lengthFieldDecoder.collecting(event);
+        },
+        onDone: () {
+          _needReconnect = true;
 
-sc.listen((event) {
-        _lengthFieldDecoder.collecting(event);
-      },
+          _reconnect();
 
-          onDone: (){
-            _needReconnect=true;
-
-_reconnect();
-
-        print('socket down');
-
-          },
+          print('socket down');
+        },
       );
-    }
-    ).onError((error, stackTrace) {
-      _needReconnect=true;
+    }).onError((error, stackTrace) {
+      _needReconnect = true;
 
       _reconnect();
       print(stackTrace);
       print('socket connect error');
-
-
-
-
     });
   }
 
@@ -195,11 +170,7 @@ _reconnect();
   Future<void> send(ClientFrame frame) async {
     await _connectState.future;
 
-  _send(frame);
-
-
-
-
+    _send(frame);
   }
 
   ByteBuf buildPakcet(Uint8List contentData, PacketType packetType,
@@ -218,7 +189,7 @@ _reconnect();
 
 //TODO socket对象连接情况也要检查
   get isConnected {
-    return _channel != null||!_needReconnect;
+    return _channel != null || !_needReconnect;
   }
 
   void _vaildConnected() {
@@ -228,7 +199,7 @@ _reconnect();
   }
 
   Future<dynamic> shutdown() async {
-    isClose=true;
+    isClose = true;
     _vaildConnected();
 
     return _channel?.close();

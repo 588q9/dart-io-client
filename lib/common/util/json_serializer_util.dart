@@ -3,7 +3,6 @@ import 'dart:typed_data';
 
 import 'package:ash_go/common/protocol/enums/packet_type.dart';
 import 'package:ash_go/common/protocol/enums/serialize_type.dart';
-import 'package:ash_go/common/protocol/frame/client/ping_client_frame.dart';
 import 'package:ash_go/common/protocol/frame/server/common_server_frame.dart';
 import 'package:ash_go/common/protocol/frame/server/exception_server_frame.dart';
 import 'package:ash_go/common/protocol/frame/server/pong_server_frame.dart';
@@ -17,23 +16,23 @@ import 'package:ash_go/common/util/serializer_util.dart';
 typedef DeserializerHandler = Function(Map<String, dynamic> data);
 
 class JsonSerializerUtil extends SerializerUtil<JsonSerializer> {
-  static  const Map<PacketType, DeserializerHandler>
-      _packetTypeDeserializerMapping ={
+  static const Map<PacketType, DeserializerHandler>
+      _packetTypeDeserializerMapping = {
     PongServerFrame.PACKET_TYPE: PongServerFrame.fromJson,
-    ExceptionServerFrame.PACKET_TYPE:ExceptionServerFrame.fromJson,
-    UserLoginServerFrame.PACKET_TYPE:UserLoginServerFrame.fromJson,
-    UserInfoServerFrame.PACKET_TYPE:UserInfoServerFrame.fromJson,
-    UserPullSessionServerFrame.PACKET_TYPE:UserPullSessionServerFrame.fromJson,
-    CommonServerFrame.PACKET_TYPE:CommonServerFrame.fromJson,
-    PushContactMessageServerFrame.PACKET_TYPE:PushContactMessageServerFrame.fromJson
+    ExceptionServerFrame.PACKET_TYPE: ExceptionServerFrame.fromJson,
+    UserLoginServerFrame.PACKET_TYPE: UserLoginServerFrame.fromJson,
+    UserInfoServerFrame.PACKET_TYPE: UserInfoServerFrame.fromJson,
+    UserPullSessionServerFrame.PACKET_TYPE: UserPullSessionServerFrame.fromJson,
+    CommonServerFrame.PACKET_TYPE: CommonServerFrame.fromJson,
+    PushContactMessageServerFrame.PACKET_TYPE:
+        PushContactMessageServerFrame.fromJson
   };
 
-const JsonSerializerUtil();
+  const JsonSerializerUtil();
 
   @override
   ServerFrame deserializer(Uint8List data, PacketType type) {
-    var jsonStr=utf8.decode(data);
-
+    var jsonStr = utf8.decode(data);
 
     Map<String, dynamic> obj = jsonDecode(jsonStr);
 
@@ -51,7 +50,7 @@ const JsonSerializerUtil();
 
   @override
   SerializeType getSerializeType() {
-   return SerializeType.JSON_SERIAL;
+    return SerializeType.JSON_SERIAL;
   }
 }
 

@@ -1,10 +1,3 @@
-
-
-
 import 'package:ash_go/common/protocol/frame/frame.dart';
 
-abstract class ClientFrame extends Frame{
-
-
-
-}
+abstract class ClientFrame extends Frame {}

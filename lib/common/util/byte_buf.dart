@@ -8,6 +8,7 @@ class ByteBuf {
   int _readerIndex = 0;
   int _writerIndex = 0;
   int extendFactor = 2;
+
   get readerIndex {
     return _readerIndex;
   }
@@ -21,24 +22,21 @@ class ByteBuf {
 
     return temp;
   }
+
   factory ByteBuf.build() {
-    
     return ByteBuf();
   }
 
   ByteBuf([Uint8List? data]) {
-if(data==null){
-var temp = Uint8List(this._initCapacity);
+    if (data == null) {
+      var temp = Uint8List(this._initCapacity);
 
-    this._initContent(temp);
-return;
-}
+      this._initContent(temp);
+      return;
+    }
 
     this._initContent(data);
     this._writerIndex = data.length;
-
-    
-
   }
 
   ByteBuf writeBytes(Uint8List data) {
@@ -165,7 +163,6 @@ return;
 
   void _vaildReadableRead(int byteCount) {
     if (!isReadableReading(byteCount)) {
-
       throw RangeError('超出读取容量');
     }
   }
