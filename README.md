@@ -8,7 +8,7 @@
 *   ByteBuf：对Uint8List（无符号字节列表）的封装，可用于按常用数据类型提取对应数量字节，并实现了读取与写入索引移动，但由于dart只支持遍历式copy不能直接内存映射，因而效率可能比较低
 
 ## 用途
-原本想用于局域网内clipboard各个设备间的互通，后因flutter未对windows的clipboard进行适配，因而搁置
+原本想用于局域网内clipboard各个设备间的互通，后因flutter未对windows的clipboard进行适配，因而搁置（整个客户端和后端写到一半才发现源码里头clipboard api对windows的处理是TODO😅）
 
 client文件夹为对TCP socket流的主要处理逻辑，在开发rcon-core之后一直觉得那里的流截取做得不好，这里也算是对字节流截取逻辑有了较大改进
 
