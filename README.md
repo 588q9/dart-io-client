@@ -2,7 +2,7 @@
 
 原本想用于局域网内clipboard各个设备间的互通，后因flutter未对windows的clipboard进行适配，因而搁置
 
-client文件夹为对TCP socket流的主要处理逻辑，在开发rcon-core之后一直觉得那里的流截取做得不好，这里也算是对字节流处理逻辑的有了较大改进
+client文件夹为对TCP socket流的主要处理逻辑，在开发rcon-core之后一直觉得那里的流截取做得不好，这里也算是对字节流截取逻辑有了较大改进
 
 现开源其代码，供大家鉴赏
 
